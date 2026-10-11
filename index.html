@@ -1,309 +1,152 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Логические высказывания — тренажёр</title>
-  <style>
-    :root{
-      --bg:#f5f8f4;--card:#fff;--ink:#173229;--muted:#66766f;
-      --green:#2f7d55;--green2:#e5f2e9;--line:#d7e4dc;
-      --good:#1f7a46;--bad:#b64040;--soft:#eef4f0;--accent:#123c2b;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-    .wrap{max-width:960px;margin:0 auto;padding:26px 18px 56px}
-    .hero{background:linear-gradient(135deg,#123c2b,#2f7d55);color:#fff;border-radius:28px;padding:28px}
-    .hero-top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;flex-wrap:wrap}
-    .eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.82;font-weight:800}
-    h1{font-size:clamp(30px,5vw,46px);line-height:1.04;margin:8px 0 10px}
-    .hero p{margin:0;max-width:730px;line-height:1.5;font-size:16px;opacity:.95}
-    .scorepill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24);border-radius:999px;padding:10px 16px;font-weight:800}
-    .progress{margin-top:20px;height:9px;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden}
-    .bar{height:100%;width:0;background:#fff;border-radius:999px;transition:width .25s ease}
-    .card{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 10px 30px rgba(18,60,43,.05)}
-    .step{font-size:13px;font-weight:800;color:var(--green);letter-spacing:.05em;text-transform:uppercase}
-    .task-title{font-size:25px;font-weight:850;margin:6px 0 8px}
-    .task-desc{color:var(--muted);line-height:1.5;margin-bottom:18px}
-    .target{display:inline-flex;background:var(--green2);color:var(--accent);padding:9px 12px;border-radius:12px;font-weight:800;margin-bottom:18px}
-    .sentence{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:20px;border-radius:18px;background:var(--soft);font-size:clamp(18px,3vw,24px);font-weight:750;line-height:1.5}
-    .facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 16px}
-    .fact{border:1px solid var(--line);background:#fbfdfb;border-radius:14px;padding:12px 14px;font-size:15px}
-    .fact strong{color:var(--accent)}
-    select,input{font:inherit}
-    select{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 20 20'%3E%3Cpath fill='%232f7d55' d='m5 7 5 5 5-5z'/%3E%3C/svg%3E") no-repeat right 12px center;border:2px solid #bad2c3;border-radius:12px;padding:10px 38px 10px 12px;color:var(--accent);font-weight:800;min-height:48px;max-width:100%}
-    input[type="text"]{width:100%;min-height:48px;border:2px solid #bad2c3;border-radius:12px;padding:11px 13px;color:var(--accent);background:#fff}
-    select:focus,input:focus{outline:3px solid rgba(47,125,85,.14);border-color:var(--green)}
-    .formgrid{display:grid;grid-template-columns:1fr 1fr 160px;gap:12px;margin-top:18px}
-    label{display:block;font-weight:800;font-size:14px}
-    label span{display:block;margin-bottom:7px}
-    .note{margin-top:12px;color:var(--muted);font-size:13px;line-height:1.45}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-    button{border:0;border-radius:13px;padding:12px 18px;font-size:16px;font-weight:800;cursor:pointer;min-height:46px}
-    .primary{background:var(--green);color:#fff}.primary:hover{filter:brightness(.95)}
-    .secondary{background:var(--soft);color:var(--accent);border:1px solid var(--line)}
-    .feedback{display:none;margin-top:15px;padding:14px 16px;border-radius:14px;line-height:1.45;font-weight:650}
-    .feedback.good{display:block;background:#e8f5ed;color:var(--good);border:1px solid #b9dec7}
-    .feedback.bad{display:block;background:#fff0f0;color:var(--bad);border:1px solid #efc3c3}
-    .feedback.info{display:block;background:#f1f4f2;color:var(--ink);border:1px solid var(--line)}
-    .hidden{display:none!important}
-    .result{text-align:center;padding:34px 22px}
-    .result .big{font-size:58px;font-weight:900;color:var(--green);margin:4px 0}
-    .result h2{font-size:30px;margin:0 0 8px}
-    .result p{color:var(--muted);font-size:16px;line-height:1.5;max-width:680px;margin:0 auto}
-    .student-chip{display:inline-block;margin-top:12px;background:var(--soft);border-radius:999px;padding:9px 13px;font-weight:750}
-    .review{margin-top:22px;text-align:left;display:grid;gap:9px}
-    .review div{background:var(--soft);border-radius:12px;padding:11px 13px;font-size:14px}
-    .save-state{margin-top:14px;font-size:13px;color:var(--muted)}
-    @media(max-width:700px){
-      .card{padding:18px}.hero{padding:22px}.sentence{padding:16px}
-      .facts,.formgrid{grid-template-columns:1fr} select{width:100%}
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Лаборатория логики — квест</title>
+<style>
+:root{--bg:#f4f8f5;--card:#fff;--ink:#173229;--muted:#64756d;--green:#2f7d55;--green2:#e5f2e9;--line:#d7e4dc;--soft:#eef4f0;--good:#1f7a46;--bad:#b64040;--accent:#123c2b}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:980px;margin:0 auto;padding:24px 18px 60px}
+.hero{background:linear-gradient(135deg,#123c2b,#2f7d55);color:#fff;border-radius:28px;padding:28px;box-shadow:0 18px 45px rgba(18,60,43,.12)}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap}
+.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.82;font-weight:800}
+h1{font-size:clamp(30px,5vw,46px);line-height:1.03;margin:8px 0 10px}
+.hero p{margin:0;max-width:720px;line-height:1.55;opacity:.95}
+.pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:10px 16px;font-weight:800}
+.progress{height:9px;background:rgba(255,255,255,.18);border-radius:999px;overflow:hidden;margin-top:20px}
+.bar{height:100%;width:0;background:white;border-radius:999px;transition:width .25s ease}
+.card{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 10px 30px rgba(18,60,43,.05)}
+.scene-tag{font-size:13px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--green)}
+.scene-title{font-size:26px;font-weight:850;margin:6px 0 8px}
+.story{color:var(--muted);line-height:1.55;margin-bottom:18px}
+.panel{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;align-items:stretch}
+.visual{border:1px solid var(--line);background:linear-gradient(160deg,#f9fcfa,#edf5ef);border-radius:20px;min-height:250px;padding:22px;display:flex;flex-direction:column;justify-content:space-between}
+.visual .bigicon{font-size:64px;line-height:1}
+.visual h3{font-size:22px;margin:10px 0 6px}
+.visual p{margin:0;color:var(--muted);line-height:1.45}
+.facts{display:grid;gap:10px}
+.fact{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15px}
+.fact b{color:var(--accent)}
+.taskbox{border:1px solid var(--line);border-radius:20px;padding:20px;background:#fff}
+.target{display:inline-flex;background:var(--green2);color:var(--accent);padding:8px 11px;border-radius:11px;font-weight:800;margin-bottom:14px}
+.sentence{display:flex;align-items:center;gap:9px;flex-wrap:wrap;background:var(--soft);border-radius:16px;padding:18px;font-size:clamp(18px,2.7vw,23px);font-weight:760;line-height:1.5}
+select,input{font:inherit}
+select{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 20 20'%3E%3Cpath fill='%232f7d55' d='m5 7 5 5 5-5z'/%3E%3C/svg%3E") no-repeat right 12px center;border:2px solid #bad2c3;border-radius:12px;padding:10px 38px 10px 12px;color:var(--accent);font-weight:800;min-height:48px;max-width:100%}
+input[type=text]{width:100%;min-height:48px;border:2px solid #bad2c3;border-radius:12px;padding:11px 13px;color:var(--accent)}
+select:focus,input:focus{outline:3px solid rgba(47,125,85,.14);border-color:var(--green)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+button{border:0;border-radius:13px;padding:12px 18px;font-size:16px;font-weight:800;cursor:pointer;min-height:46px}
+.primary{background:var(--green);color:#fff}.secondary{background:var(--soft);color:var(--accent);border:1px solid var(--line)}
+.feedback{display:none;margin-top:15px;padding:14px 16px;border-radius:14px;line-height:1.45;font-weight:650}
+.feedback.good{display:block;background:#e8f5ed;color:var(--good);border:1px solid #b9dec7}
+.feedback.bad{display:block;background:#fff0f0;color:var(--bad);border:1px solid #efc3c3}
+.feedback.info{display:block;background:#f1f4f2;color:var(--ink);border:1px solid var(--line)}
+.formgrid{display:grid;grid-template-columns:1fr 1fr 150px;gap:12px;margin-top:18px}
+label{font-size:14px;font-weight:800}label span{display:block;margin-bottom:7px}
+.hidden{display:none!important}
+.result{text-align:center;padding:34px 22px}.result .big{font-size:58px;font-weight:900;color:var(--green);margin:5px 0}.result h2{font-size:30px;margin:0 0 8px}
+.student{display:inline-block;margin-top:12px;background:var(--soft);border-radius:999px;padding:9px 13px;font-weight:750}
+.review{margin:22px auto 0;max-width:680px;text-align:left;display:grid;gap:9px}.review div{background:var(--soft);border-radius:12px;padding:11px 13px;font-size:14px}
+.save-state{margin-top:14px;color:var(--muted);font-size:13px}
+@media(max-width:760px){.panel{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.card{padding:18px}.hero{padding:22px}.sentence{padding:16px}select{width:100%}}
+</style>
 </head>
 <body>
 <div class="wrap">
-  <section class="hero">
-    <div class="hero-top">
-      <div>
-        <div class="eyebrow">Информатика · 8 класс</div>
-        <h1>Логические высказывания</h1>
-        <p>Собирай высказывания из готовых частей, определяй их смысл и используй И, ИЛИ, НЕ в небольшом квесте.</p>
-      </div>
-      <div class="scorepill hidden" id="score">0 / 10</div>
+<section class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="eyebrow">Информатика · 8 класс</div>
+      <h1>Квест «Лаборатория логики»</h1>
+      <p>Ты попал в учебную лабораторию. Чтобы выбраться, нужно пройти восемь логических проверок.</p>
     </div>
-    <div class="progress hidden" id="progress"><div class="bar" id="bar"></div></div>
-  </section>
-  <main id="stage"></main>
+    <div class="pill hidden" id="score">0 / 8</div>
+  </div>
+  <div class="progress hidden" id="progress"><div class="bar" id="bar"></div></div>
+</section>
+<main id="stage"></main>
 </div>
-
 <script>
-const RESULTS_ENDPOINT = "";
-const tasks = [
-  {label:"Задание 1",title:"Что вообще является высказыванием?",desc:"Выбери вариант, который можно оценить как истинный или ложный.",target:"Нужно выбрать: ВЫСКАЗЫВАНИЕ",type:"statement"},
-  {label:"Задание 2",title:"Собери истинное высказывание",desc:"Подставь продолжение так, чтобы фраза была верной.",target:"Нужно получить: ИСТИНА",type:"penguinTrue"},
-  {label:"Задание 3",title:"Собери ложное высказывание",desc:"Теперь специально составь неверную фразу.",target:"Нужно получить: ЛОЖЬ",type:"penguinFalse"},
-  {label:"Задание 4",title:"Сделай высказывание элементарным",desc:"Оставь только одну законченную мысль.",target:"Нужно получить: ЭЛЕМЕНТАРНОЕ",type:"elementary"},
-  {label:"Задание 5",title:"Собери составное высказывание",desc:"Соедини две отдельные мысли в одно высказывание.",target:"Нужно получить: СОСТАВНОЕ",type:"compound"},
-  {label:"Задание 6",title:"Исправь только одно поле",desc:"Сделай фразу истинной, поменяв только пропущенное слово.",target:"Нужно получить: ИСТИНА",type:"wordFact"},
-  {label:"Задание 7",title:"Квест: открыть дверь",desc:"Ключ найден, пароль неизвестен. Подбери связку, чтобы условие открытия было истинным.",target:"Нужно открыть дверь",type:"door"},
-  {label:"Задание 8",title:"Квест: взять книгу",desc:"По правилу библиотеки нужны и читательский билет, и открытая библиотека. Оба условия выполнены.",target:"Нужно точно передать правило",type:"library"},
-  {label:"Задание 9",title:"Квест: сигнализация",desc:"Сигнализация выключена. Подбери выражение с НЕ, которое верно описывает ситуацию.",target:"Нужно получить: ИСТИНА",type:"not"},
-  {label:"Задание 10",title:"Финальный квест",desc:"Для получения подсказки достаточно выполнить хотя бы одно из двух действий. Записка найдена, охранник не встречен.",target:"Нужно получить подсказку",type:"finalQuest"}
+const RESULTS_ENDPOINT="";
+const tasks=[
+{title:"Терминал у входа",icon:"🖥️",story:"Перед тобой терминал. Он принимает только логические высказывания — фразы, про которые можно сказать, истинны они или ложны.",facts:["Дверь сейчас закрыта."],target:"Выбери высказывание",type:"statement"},
+{title:"Комната наблюдения",icon:"📹",story:"На мониторе видно состояние комнаты. Система просит оценить готовую фразу.",facts:["Свет: включён.","Окно: закрыто."],target:"Определи логическое значение",type:"truth"},
+{title:"Архив записок",icon:"🗂️",story:"Система просит отправить одно элементарное высказывание — только одну законченную мысль.",facts:["На столе лежит карта доступа.","Дверь в архив закрыта."],target:"Оставь только одну мысль",type:"elementary"},
+{title:"Пост охраны",icon:"🪪",story:"Теперь система просит сообщить сразу два факта, которые выполняются одновременно.",facts:["Карта доступа найдена.","Камера наблюдения работает."],target:"Соедини оба факта",type:"and"},
+{title:"Запасной вход",icon:"🚪",story:"Эта дверь откроется, если выполнено хотя бы одно из двух условий.",facts:["Ключ: есть.","Код двери: неизвестен."],target:"Подбери связку",type:"or"},
+{title:"Сигнализация",icon:"🔕",story:"Перед проходом нужно правильно описать состояние сигнализации с помощью отрицания.",facts:["Сигнализация: выключена."],target:"Используй НЕ",type:"not"},
+{title:"Шкаф с оборудованием",icon:"🧰",story:"Система проверяет условие доступа. Тебе нужно сделать его ложным, чтобы шкаф остался закрыт.",facts:["Флешка найдена: да.","Шкаф открыт: нет."],target:"Сделай условие ложным",type:"falseAnd"},
+{title:"Финальный шлюз",icon:"🔐",story:"Последняя проверка. Чтобы шлюз открылся, должны одновременно выполняться два условия.",facts:["Пропуск: есть.","Блокировка: выключена."],target:"Собери истинное составное высказывание",type:"final"}
 ];
-
-let index=0, score=0, attempts=0;
-const stage=document.getElementById("stage");
-const scoreEl=document.getElementById("score");
-const progress=document.getElementById("progress");
-const bar=document.getElementById("bar");
-let student={firstName:"",lastName:"",className:""};
-const details=[];
-
+let student={firstName:"",lastName:"",className:""},index=0,score=0,attempts=0,startTime=0;
+const mistakes=[];
+const stage=document.getElementById("stage"),scoreEl=document.getElementById("score"),progress=document.getElementById("progress"),bar=document.getElementById("bar");
 function esc(s){return String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));}
-function sel(id,options){return '<select id="'+id+'"><option value="">___</option>'+options.map(o=>'<option value="'+o.v+'">'+o.t+'</option>').join("")+'</select>';}
-
-function renderStart(){
-  scoreEl.classList.add("hidden");
-  progress.classList.add("hidden");
-  stage.innerHTML=`
-    <section class="card">
-      <div class="step">Перед началом</div>
-      <div class="task-title">Представься</div>
-      <div class="task-desc">Имя, фамилия и класс попадут в результат вместе с набранными баллами.</div>
-      <div class="formgrid">
-        <label><span>Имя</span><input id="firstName" type="text" autocomplete="given-name" placeholder="Яна"></label>
-        <label><span>Фамилия</span><input id="lastName" type="text" autocomplete="family-name" placeholder="Иванова"></label>
-        <label><span>Класс</span><input id="className" type="text" placeholder="8А"></label>
-      </div>
-      <div class="actions"><button class="primary" id="startBtn">Начать тренажёр</button></div>
-      <div class="feedback" id="startMsg"></div>
-      <div class="note">Пиши имя и фамилию полностью, чтобы учителю было легко найти твой результат.</div>
-    </section>`;
+function sel(id,ops){return '<select id="'+id+'"><option value="">___</option>'+ops.map(o=>'<option value="'+o.v+'">'+o.t+'</option>').join("")+'</select>';}
+function startScreen(){
+  scoreEl.classList.add("hidden");progress.classList.add("hidden");
+  stage.innerHTML='<section class="card"><div class="scene-tag">Перед началом</div><div class="scene-title">Кто проходит квест?</div><div class="story">Введи свои данные. Они будут добавлены к итоговому результату.</div><div class="formgrid"><label><span>Имя</span><input id="first" type="text" placeholder="Яна"></label><label><span>Фамилия</span><input id="last" type="text" placeholder="Иванова"></label><label><span>Класс</span><input id="className" type="text" placeholder="8А"></label></div><div class="actions"><button class="primary" id="startBtn">Начать квест</button></div><div class="feedback" id="msg"></div></section>';
   document.getElementById("startBtn").addEventListener("click",()=>{
-    const firstName=document.getElementById("firstName").value.trim();
-    const lastName=document.getElementById("lastName").value.trim();
-    const className=document.getElementById("className").value.trim();
-    if(firstName.length<2||lastName.length<2||className.length<1){
-      const m=document.getElementById("startMsg");m.className="feedback info";m.textContent="Заполни имя, фамилию и класс.";return;
-    }
-    student={firstName,lastName,className};
-    scoreEl.classList.remove("hidden");progress.classList.remove("hidden");
-    renderTask();
+    const f=document.getElementById("first").value.trim(),l=document.getElementById("last").value.trim(),c=document.getElementById("className").value.trim();
+    if(f.length<2||l.length<2||!c){const m=document.getElementById("msg");m.className="feedback info";m.textContent="Заполни имя, фамилию и класс.";return;}
+    student={firstName:f,lastName:l,className:c};index=0;score=0;attempts=0;mistakes.length=0;startTime=Date.now();
+    scoreEl.classList.remove("hidden");progress.classList.remove("hidden");render();
   });
 }
-
-function frame(t,body,facts=""){
-  stage.innerHTML=`
-    <section class="card">
-      <div class="step">${t.label} · ${index+1} из ${tasks.length}</div>
-      <div class="task-title">${t.title}</div>
-      <div class="task-desc">${t.desc}</div>
-      <div class="target">${t.target}</div>
-      ${facts}
-      <div class="sentence">${body}</div>
-      <div class="actions">
-        <button class="primary" id="checkBtn">Проверить</button>
-        <button class="secondary" id="resetBtn">Очистить поле</button>
-      </div>
-      <div class="feedback" id="feedback" aria-live="polite"></div>
-    </section>`;
-  document.getElementById("checkBtn").addEventListener("click",check);
-  document.getElementById("resetBtn").addEventListener("click",renderTask);
-}
-
-function renderTask(){
-  scoreEl.textContent=score+" / "+tasks.length;
-  bar.style.width=Math.round(index/tasks.length*100)+"%";
+function render(){
   if(index>=tasks.length){showResult();return;}
+  scoreEl.textContent=score+" / "+tasks.length;bar.style.width=Math.round(index/tasks.length*100)+"%";
   const t=tasks[index];
-  if(t.type==="statement"){
-    frame(t,sel("r",[
-      {v:"statement",t:"Москва — столица России."},
-      {v:"question",t:"Который сейчас час?"},
-      {v:"command",t:"Закрой дверь!"}
-    ]));
-  }
-  if(t.type==="penguinTrue"){
-    frame(t,'Пингвин умеет '+sel("r",[
-      {v:"swim",t:"плавать"},
-      {v:"fly",t:"летать"},
-      {v:"breatheWater",t:"дышать под водой как рыба"}
-    ]));
-  }
-  if(t.type==="penguinFalse"){
-    frame(t,'Пингвин умеет '+sel("r",[
-      {v:"swim",t:"плавать"},
-      {v:"walk",t:"ходить"},
-      {v:"fly",t:"летать"}
-    ]));
-  }
-  if(t.type==="elementary"){
-    frame(t,'На улице идёт дождь '+sel("r",[
-      {v:"stop",t:"(закончить высказывание)"},
-      {v:"and",t:"И дует ветер"},
-      {v:"or",t:"ИЛИ дует ветер"}
-    ]));
-  }
-  if(t.type==="compound"){
-    frame(t,'Книга лежит на столе '+sel("r",[
-      {v:"and",t:"И"},
-      {v:"or",t:"ИЛИ"},
-      {v:"dot",t:"."}
-    ])+' лампа включена');
-  }
-  if(t.type==="wordFact"){
-    frame(t,'В слове «КОТ» '+sel("r",[
-      {v:"has",t:"есть"},
-      {v:"no",t:"нет"}
-    ])+' буква К');
-  }
-  if(t.type==="door"){
-    frame(t,'есть ключ '+sel("r",[{v:"and",t:"И"},{v:"or",t:"ИЛИ"}])+' известен пароль',
-      '<div class="facts"><div class="fact">Ключ: <strong>есть</strong></div><div class="fact">Пароль: <strong>неизвестен</strong></div></div>');
-  }
-  if(t.type==="library"){
-    frame(t,'есть читательский билет '+sel("r",[{v:"and",t:"И"},{v:"or",t:"ИЛИ"}])+' библиотека открыта',
-      '<div class="facts"><div class="fact">Билет: <strong>есть</strong></div><div class="fact">Библиотека: <strong>открыта</strong></div></div>');
-  }
-  if(t.type==="not"){
-    frame(t,sel("r",[
-      {v:"notOn",t:"НЕ включена сигнализация"},
-      {v:"notOff",t:"НЕ выключена сигнализация"},
-      {v:"on",t:"включена сигнализация"}
-    ]),'<div class="facts"><div class="fact">Состояние: <strong>сигнализация выключена</strong></div></div>');
-  }
-  if(t.type==="finalQuest"){
-    frame(t,'найдена записка '+sel("r",[{v:"and",t:"И"},{v:"or",t:"ИЛИ"}])+' поговорили с охранником',
-      '<div class="facts"><div class="fact">Записка: <strong>найдена</strong></div><div class="fact">Охранник: <strong>не встречен</strong></div></div>');
-  }
+  let body="";
+  if(t.type==="statement") body=sel("a",[{v:"s",t:"Дверь закрыта."},{v:"q",t:"Где находится ключ?"},{v:"c",t:"Открой дверь!"}]);
+  if(t.type==="truth") body='Высказывание «Свет выключен» — '+sel("a",[{v:"t",t:"ИСТИНА"},{v:"f",t:"ЛОЖЬ"}]);
+  if(t.type==="elementary") body='Карта доступа найдена '+sel("a",[{v:"stop",t:"(закончить высказывание)"},{v:"and",t:"И дверь закрыта"},{v:"or",t:"ИЛИ дверь закрыта"}]);
+  if(t.type==="and") body='карта доступа найдена '+sel("a",[{v:"and",t:"И"},{v:"or",t:"ИЛИ"}])+' камера работает';
+  if(t.type==="or") body='есть ключ '+sel("a",[{v:"and",t:"И"},{v:"or",t:"ИЛИ"}])+' известен код двери';
+  if(t.type==="not") body=sel("a",[{v:"notOn",t:"НЕ включена сигнализация"},{v:"notOff",t:"НЕ выключена сигнализация"},{v:"on",t:"включена сигнализация"}]);
+  if(t.type==="falseAnd") body='флешка найдена '+sel("a",[{v:"and",t:"И"},{v:"or",t:"ИЛИ"}])+' шкаф открыт';
+  if(t.type==="final") body='есть пропуск '+sel("a",[{v:"and",t:"И"},{v:"or",t:"ИЛИ"}])+' '+sel("b",[{v:"notOn",t:"НЕ включена блокировка"},{v:"on",t:"включена блокировка"}]);
+  stage.innerHTML='<section class="card"><div class="scene-tag">Сцена '+(index+1)+' из '+tasks.length+'</div><div class="scene-title">'+t.title+'</div><div class="story">'+t.story+'</div><div class="panel"><div class="visual"><div><div class="bigicon">'+t.icon+'</div><h3>'+t.title+'</h3><p>Используй только факты, которые показаны ниже.</p></div><div class="facts">'+t.facts.map(x=>'<div class="fact">'+x+'</div>').join("")+'</div></div><div class="taskbox"><div class="target">'+t.target+'</div><div class="sentence">'+body+'</div><div class="actions"><button class="primary" id="check">Проверить</button><button class="secondary" id="reset">Очистить</button></div><div class="feedback" id="feedback"></div></div></div></section>';
+  document.getElementById("check").addEventListener("click",check);
+  document.getElementById("reset").addEventListener("click",render);
 }
-
 function val(id){const e=document.getElementById(id);return e?e.value:"";}
-function feedback(text,kind){const el=document.getElementById("feedback");el.className="feedback "+kind;el.innerHTML=text;}
-function need(){if(!val("r")){feedback("Сначала выбери вариант для пустого поля.","info");return false;}return true;}
-function success(text){
-  score++;attempts++;details.push({task:index+1,correct:true});
-  feedback("✅ Верно. "+text,"good");lockAndNext();
-}
-function fail(text){
-  attempts++;details.push({task:index+1,correct:false});
-  feedback("❌ Пока неверно. "+text,"bad");
-}
-function lockAndNext(){
-  document.querySelectorAll("select").forEach(s=>s.disabled=true);
-  document.getElementById("checkBtn").disabled=true;
-  document.getElementById("resetBtn").classList.add("hidden");
-  const next=document.createElement("button");
-  next.className="primary";next.textContent=index===tasks.length-1?"Показать результат":"Следующее задание";
-  next.addEventListener("click",()=>{index++;renderTask();});
-  document.querySelector(".actions").appendChild(next);
-  scoreEl.textContent=score+" / "+tasks.length;
-  bar.style.width=Math.round((index+1)/tasks.length*100)+"%";
-}
+function fb(text,kind){const e=document.getElementById("feedback");e.className="feedback "+kind;e.innerHTML=text;}
+function ok(text){score++;attempts++;fb("✅ "+text,"good");lock();}
+function bad(text){attempts++;if(!mistakes.includes(index+1))mistakes.push(index+1);fb("❌ "+text,"bad");}
+function lock(){document.querySelectorAll("select").forEach(s=>s.disabled=true);document.getElementById("check").disabled=true;document.getElementById("reset").classList.add("hidden");const n=document.createElement("button");n.className="primary";n.textContent=index===tasks.length-1?"Завершить квест":"Дальше";n.addEventListener("click",()=>{index++;render();});document.querySelector(".actions").appendChild(n);scoreEl.textContent=score+" / "+tasks.length;bar.style.width=Math.round((index+1)/tasks.length*100)+"%";}
 function check(){
-  if(!need())return;
-  const t=tasks[index],r=val("r");
-  if(t.type==="statement") return r==="statement"?success("Это повествовательное предложение, у которого можно определить истинность."):fail("Вопрос и команда не имеют логического значения «истина» или «ложь».");
-  if(t.type==="penguinTrue") return r==="swim"?success("Пингвины действительно умеют плавать."):fail("Нужно выбрать верный факт о пингвине.");
-  if(t.type==="penguinFalse") return r==="fly"?success("Пингвины не умеют летать, поэтому высказывание получилось ложным."):fail("Получился верный факт. Нужно специально сделать высказывание ложным.");
-  if(t.type==="elementary") return r==="stop"?success("Осталась одна законченная мысль — это элементарное высказывание."):fail("Связка добавила вторую мысль, поэтому высказывание стало составным.");
-  if(t.type==="compound") return r!=="dot"?success("Связка соединила две отдельные мысли в одно составное высказывание."):fail("Точка разделяет мысли на два предложения, а не соединяет их.");
-  if(t.type==="wordFact") return r==="has"?success("В слове «КОТ» действительно есть буква К."):fail("Посмотри на слово ещё раз и проверь первую букву.");
-  if(t.type==="door") return r==="or"?success("При ИЛИ достаточно одного выполненного условия: ключ уже есть."):fail("Для И нужны оба условия, а пароль неизвестен.");
-  if(t.type==="library") return r==="and"?success("Правило требует выполнения двух условий одновременно, поэтому нужна связка И."):fail("ИЛИ означало бы, что достаточно только одного условия, а по правилу нужны оба.");
-  if(t.type==="not") return r==="notOn"?success("«НЕ включена сигнализация» верно описывает выключенное состояние."):fail("Нужно использовать НЕ так, чтобы фраза соответствовала выключенной сигнализации.");
-  if(t.type==="finalQuest") return r==="or"?success("Для ИЛИ достаточно найденной записки — подсказка получена."):fail("При И понадобились бы и записка, и разговор с охранником.");
+  const t=tasks[index],a=val("a"),b=val("b");if(!a||(t.type==="final"&&!b)){fb("Заполни все пустые поля.","info");return;}
+  if(t.type==="statement") return a==="s"?ok("Терминал принял фразу: у неё можно определить истинность."):bad("Это вопрос или команда. У них нет логического значения «истина» или «ложь».");
+  if(t.type==="truth") return a==="f"?ok("По условию свет включён, значит фраза «Свет выключен» ложна."):bad("Сверь фразу с фактом на экране: свет включён.");
+  if(t.type==="elementary") return a==="stop"?ok("Осталась одна законченная мысль — элементарное высказывание."):bad("Ты добавил вторую мысль, поэтому высказывание стало составным.");
+  if(t.type==="and") return a==="and"?ok("Связка И показывает, что оба факта выполняются одновременно."):bad("Здесь система просит указать, что выполняются сразу оба факта.");
+  if(t.type==="or") return a==="or"?ok("При ИЛИ достаточно одного выполненного условия: ключ уже есть."):bad("При И понадобились бы и ключ, и код одновременно.");
+  if(t.type==="not") return a==="notOn"?ok("«НЕ включена сигнализация» верно описывает выключенное состояние."):bad("Нужно описать выключенное состояние с помощью отрицания НЕ.");
+  if(t.type==="falseAnd") return a==="and"?ok("Флешка найдена, но шкаф не открыт. Поэтому выражение с И получается ложным."):bad("При ИЛИ достаточно одного истинного условия, а флешка уже найдена.");
+  if(t.type==="final") return (a==="and"&&b==="notOn")?ok("Оба условия истинны: пропуск есть и блокировка не включена. Шлюз открыт."):bad("Нужны оба условия одновременно, а блокировка должна быть именно НЕ включена.");
 }
-
-async function saveResult(payload){
+async function send(payload){
+  try{localStorage.setItem("logic-last-result",JSON.stringify(payload));}catch(e){}
+  if(!RESULTS_ENDPOINT)return false;
   try{
-    localStorage.setItem("logic-last-result",JSON.stringify(payload));
-  }catch(e){}
-  if(!RESULTS_ENDPOINT) return {remote:false};
-  try{
-    await fetch(RESULTS_ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)});
-    return {remote:true};
-  }catch(e){return {remote:false};}
+    const body=new URLSearchParams(payload);
+    await fetch(RESULTS_ENDPOINT,{method:"POST",mode:"no-cors",body});
+    return true;
+  }catch(e){return false;}
 }
-
 async function showResult(){
   bar.style.width="100%";
+  const sec=Math.max(1,Math.round((Date.now()-startTime)/1000));
   const pct=Math.round(score/tasks.length*100);
-  const payload={
-    timestamp:new Date().toISOString(),
-    firstName:student.firstName,
-    lastName:student.lastName,
-    className:student.className,
-    score:score,
-    total:tasks.length,
-    percent:pct,
-    attempts:attempts,
-    details:details
-  };
-  const save=await saveResult(payload);
-  const msg=pct>=90?"Отличный результат."
-    :pct>=70?"Хорошо. Основные идеи понятны."
-    :"Стоит ещё раз пройти задания и внимательно читать подсказки.";
-  stage.innerHTML=`
-    <section class="card result">
-      <div class="step">Готово</div>
-      <div class="student-chip">${esc(student.lastName)} ${esc(student.firstName)} · ${esc(student.className)}</div>
-      <div class="big">${score}/${tasks.length}</div>
-      <h2>${pct}%</h2>
-      <p>${msg}</p>
-      <div class="review">
-        <div><b>Высказывания:</b> отличали их от вопросов и команд.</div>
-        <div><b>Структура:</b> собирали элементарные и составные высказывания.</div>
-        <div><b>Логика:</b> применяли И, ИЛИ и НЕ в игровых ситуациях.</div>
-      </div>
-      <div class="save-state">${save.remote?"Результат отправлен учителю.":"Результат сохранён на этом устройстве."}</div>
-      <div class="actions" style="justify-content:center"><button class="primary" id="again">Пройти ещё раз</button></div>
-    </section>`;
-  document.getElementById("again").addEventListener("click",()=>{index=0;score=0;attempts=0;details.length=0;renderStart();});
+  const payload={timestamp:new Date().toISOString(),lastName:student.lastName,firstName:student.firstName,className:student.className,score:String(score),total:String(tasks.length),percent:String(pct),attempts:String(attempts),mistakes:mistakes.join(","),seconds:String(sec)};
+  const sent=await send(payload);
+  stage.innerHTML='<section class="card result"><div class="scene-tag">Квест завершён</div><div class="student">'+esc(student.lastName)+' '+esc(student.firstName)+' · '+esc(student.className)+'</div><div class="big">'+score+'/'+tasks.length+'</div><h2>'+pct+'%</h2><p>'+(pct>=88?"Отличная работа: ты уверенно разобрался с логическими высказываниями.":pct>=63?"Хорошо. Основные идеи понятны, но некоторые сцены стоит повторить.":"Пройди квест ещё раз и внимательно читай факты в каждой сцене.")+'</p><div class="review"><div><b>Ошибки:</b> '+(mistakes.length?mistakes.join(", "):"нет")+'</div><div><b>Попыток:</b> '+attempts+'</div><div><b>Время:</b> '+sec+' сек.</div></div><div class="save-state">'+(sent?"Результат отправлен учителю.":"Результат сохранён на этом устройстве. Автоматическая отправка будет включена после подключения таблицы.")+'</div><div class="actions" style="justify-content:center"><button class="primary" id="again">Пройти ещё раз</button></div></section>';
+  document.getElementById("again").addEventListener("click",startScreen);
 }
-
-renderStart();
+startScreen();
 </script>
 </body>
 </html>
